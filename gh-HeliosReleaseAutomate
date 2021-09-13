@@ -54,6 +54,7 @@ createrelease(){
     echo -n "what is the name of the fork ? (ex : HeliosLauncher if https://github.com/dscalzi/HeliosLauncher) : "
     read forkname
     echo "creating release ..."
+    gh workflow enable build.yml
     gh release create $tag -d -F CHANGELOG.md -t $releasename -R $owner/$forkname
     setcommitmsg
 }
