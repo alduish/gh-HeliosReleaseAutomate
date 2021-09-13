@@ -1,7 +1,106 @@
 #!/bin/bash
 set -e
+settag(){
+    echo "Write the tag of the release ex : v1.5.7 (need to be the same with the tag in package.json)"
+    read tag
+    echo -n "the tag is $tag ? Y/n : "
+    read tagyesno
+    if [ "$tagyesno" = "Y" ] || [ "$tagyesno" = "y" ]; then
+        echo "the tag is $tag"
+        setreleasename
+    elif [ "$tagyesno" = "n" ] || [ "$tagyesno" = "N" ]; then
+        settag
+    else
+        echo "you need to type y or n"
+        settag
+    fi
+}
 
-echo "Hello gh-HeliosReleaseAutomate!"
+setreleasename(){
+    echo "Write the name of the release (default = $tag)"
+    read releasename
+    if [ "$releasename" = "" ]; then
+        releasename="$tag"
+    fi
+    echo -n "the name of the release is $releasename ? Y/n : "
+    read releasenameyesno
+    if [ "$releasenameyesno" = "y" ] || [ "$releasenameyesno" = "Y" ]; then
+        echo "the name of the release is : $releasename"
+        createrelease
+    elif [ "$releasenameyesno" = "n" ] || [ "$releasenameyesno" = "N" ]; then
+        setreleasename
+    else
+        echo "you need to type y or n"
+        setreleasename
+    fi
+}
+
+verifyfile(){
+    echo "verifying that required files exist"
+    if [ -e "package.json" ]; then
+        if [ -e ".github/workflows/build.yml" ]; then
+            echo "ok"
+            settag
+            fi
+    else
+        echo "one or more file/directory is missing verify that you execute it in the correct directory (the helios directory)"
+        exit
+    fi
+}
+
+createrelease(){
+    echo -n "who is the owner of the fork ? (ex : dscalzi if https://github.com/dscalzi/HeliosLauncher) : "
+    read owner
+    echo -n "what is the name of the fork ? (ex : HeliosLauncher if https://github.com/dscalzi/HeliosLauncher) : "
+    read forkname
+    echo "creating release ..."
+    gh release create $tag -d -F CHANGELOG.md -t $releasename -R $owner/$forkname
+    setcommitmsg
+}
+
+setcommitmsg(){
+    echo "what you want as commit message ? (default : $releasename)"
+    read commitmsg
+        if [ "$commitmsg" = "" ]; then
+        commitmsg="$releasename"
+    fi
+    echo -n "the commit message is $commitmsg ? Y/n : "
+    read commitmsgyesno
+    if [ "$commitmsgyesno" = "y" ] || [ "$commitmsgyesno" = "Y" ]; then
+        echo "the commit message is : $commitmsg"
+        push
+    elif [ "$releasenameyesno" = "n" ] || [ "$releasenameyesno" = "N" ]; then
+        setcommitmsg
+    else
+        echo "you need to type y or n"
+        setcommitmsg
+    fi
+}
+
+push(){
+    echo "pushing ..."
+    git add .
+
+    git commit -m "$commitmsg"
+
+    git push
+    echo -e "all is good (normally and if no error displayed during the process \nif there is a problem go here : https://github.com/gamernitro999/gh-HeliosReleaseAutomate/issues) \nif no problem go on https://github.com/$owner/$forkname/actions and wait until that finish (1-2 min) \nand go on https://github.com/$owner/$forkname/releases and publish the draft \nthank for using this tool."
+}
+
+warning(){
+    echo -e -n "Warning! you need to execute that in the helios directory \nyou also need to create a CHANGELOG.md for the changelog \nand in the package.json L48 change the repo url \nand you need to make gh auth login BEFORE using this tool \nis that ok ? Y/n : "
+    read warningyesno
+        if [ "$warningyesno" = "Y" ] || [ "$warningyesno" = "y" ]; then
+        verifyfile
+    elif [ "$warningyesno" = "n" ] || [ "$warningyesno" = "N" ]; then
+        exit
+    else
+        echo "you need to type y or n"
+        warning
+    fi
+}
+
+warning
 
 # Snippets to help get started:
 
