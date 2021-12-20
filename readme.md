@@ -5,5 +5,6 @@ Install :
 
 Usage :
     gh HeliosReleaseAutomate
+    and follow what is written in the tool
 
 If any issues go to : https://github.com/gamernitro999/gh-HeliosReleaseAutomate/issues
