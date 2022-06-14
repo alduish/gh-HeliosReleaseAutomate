@@ -89,7 +89,7 @@ push(){
 }
 
 warning(){
-    echo -e -n "Warning! you need to execute that in the helios directory \nyou also need to create a CHANGELOG.md for the changelog \nand in the package.json L48 change the repo url \nand you need to make gh auth login BEFORE using this tool \nis that ok ? Y/n : "
+    echo -e -n "Warning! you need to execute that in the helios directory \nyou also need to create a CHANGELOG.md for the changelog \nand in the package.json L48 change the repo url \nand in dev-app-updates.yml you need to set you github username and the name of your fork \nand you need to make gh auth login BEFORE using this tool \nis that ok ? Y/n : "
     read warningyesno
         if [ "$warningyesno" = "Y" ] || [ "$warningyesno" = "y" ]; then
         verifyfile
