@@ -1,7 +1,7 @@
 HeliosReleaseAutomate is a tool to automate the release for helios based launcher
 
 Install :
-    need github cli and
+    need [github cli](https://cli.github.com/) and
     ``gh extension install gamernitro999/gh-HeliosReleaseAutomate``
 
 Usage :
